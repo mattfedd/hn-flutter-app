@@ -12,27 +12,52 @@ class ItemListCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 1.0),
+      margin: EdgeInsets.only(bottom: 1.0),
       padding: EdgeInsets.symmetric(vertical: 1.0),
       child: Material(
-        color: Colors.blue,
+        color: Colors.orange[100],
         child: InkWell(
           onTap: () => child.url != null ? _launchURL(child.url) : {},
           child: Container(
             constraints: BoxConstraints(minHeight: 48),
             margin: EdgeInsets.symmetric(vertical: 4.0),
             padding: EdgeInsets.symmetric(vertical: 4.0),
-            alignment: Alignment.topLeft,
+            alignment: Alignment.centerLeft,
             // color: Colors.grey,
-            color: Colors.orange[300],
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
-              // height: 60,
-              color: Colors.orange[100],
-              child: Text(
-                child.title ?? "",
-                style: TextStyle(fontSize: 18),
-              ),
+            // color: Colors.orange[300],
+            child: Row(
+              children: <Widget>[
+                Column(
+                  children: <Widget>[
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 5.0),
+                      margin: EdgeInsets.only(left: 3.0),
+                      width: 50,
+                      alignment: Alignment.center,
+                      child: Text('${child.score} ^'),
+                    ),
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 5.0),
+                      margin: EdgeInsets.only(left: 3.0),
+                      width: 50,
+                      alignment: Alignment.center,
+                      child: Text('${child.descendants} c'),
+                    ),
+                  ],
+                ),
+                Container(
+                  // alignment: Alignment.centerLeft,
+                  constraints: BoxConstraints(maxWidth: 350),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
+                  // height: 60,
+                  // color: Colors.white70,
+                  child: Text(
+                    child.title ?? "",
+                    style: TextStyle(fontSize: 18),
+                  ),
+                ),
+              ],
             ),
           ),
         ),
