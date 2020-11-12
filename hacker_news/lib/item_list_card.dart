@@ -35,16 +35,18 @@ class ItemListCard extends StatelessWidget {
                         ],
                       )
                     : _buildScoreTextDisplay(),
-                Container(
-                  // alignment: Alignment.centerLeft,
-                  constraints: BoxConstraints(maxWidth: 350),
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
-                  // height: 60,
-                  // color: Colors.white70,
-                  child: Text(
-                    child.title ?? "",
-                    style: TextStyle(fontSize: 18),
+                Expanded(
+                  child: Container(
+                    // alignment: Alignment.centerLeft,
+                    constraints: BoxConstraints(maxWidth: 350),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
+                    // height: 60,
+                    // color: Colors.white70,
+                    child: Text(
+                      child.title ?? "",
+                      style: TextStyle(fontSize: 18),
+                    ),
                   ),
                 ),
               ],

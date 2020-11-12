@@ -28,3 +28,4 @@ Things to do
 - [x] drag down to refresh
 - [ ] integration tests 
 - [ ] better styling on the list cards
+- [x] cards need to make their elements use percentage based sizing or something flexy
