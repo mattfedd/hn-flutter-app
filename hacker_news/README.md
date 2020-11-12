@@ -25,6 +25,6 @@ Things to do
 - [ ] clicking something on a comment opens a user's profile 
 - [ ] search menu with angolia api, results are similar to story list view
 - [ ] settings for font size, color theme, caching options, etc
-- [ ] drag down to refresh
+- [x] drag down to refresh
 - [ ] integration tests 
 - [ ] better styling on the list cards
