@@ -27,24 +27,14 @@ class ItemListCard extends StatelessWidget {
             // color: Colors.orange[300],
             child: Row(
               children: <Widget>[
-                Column(
-                  children: <Widget>[
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: 5.0),
-                      margin: EdgeInsets.only(left: 3.0),
-                      width: 50,
-                      alignment: Alignment.center,
-                      child: Text('${child.score} ^'),
-                    ),
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: 5.0),
-                      margin: EdgeInsets.only(left: 3.0),
-                      width: 50,
-                      alignment: Alignment.center,
-                      child: Text('${child.descendants} c'),
-                    ),
-                  ],
-                ),
+                child.descendants != null
+                    ? Column(
+                        children: <Widget>[
+                          _buildScoreTextDisplay(),
+                          _buildCommentTextDisplay(),
+                        ],
+                      )
+                    : _buildScoreTextDisplay(),
                 Container(
                   // alignment: Alignment.centerLeft,
                   constraints: BoxConstraints(maxWidth: 350),
@@ -71,5 +61,25 @@ class ItemListCard extends StatelessWidget {
     } else {
       throw 'Could not launch $url';
     }
+  }
+
+  Widget _buildScoreTextDisplay() {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 5.0),
+      margin: EdgeInsets.only(left: 3.0),
+      width: 50,
+      alignment: Alignment.center,
+      child: Text('${child.score} ^'),
+    );
+  }
+
+  Widget _buildCommentTextDisplay() {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 5.0),
+      margin: EdgeInsets.only(left: 3.0),
+      width: 50,
+      alignment: Alignment.center,
+      child: Text('${child.descendants} c'),
+    );
   }
 }
