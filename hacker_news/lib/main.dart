@@ -1,6 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:hacker_news/item.dart';
+import 'package:hacker_news/item_list_card.dart';
+import 'package:hacker_news/item_provider.dart';
 import 'package:http/http.dart' as http;
 
 void main() {
@@ -13,7 +16,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.red,
+        primarySwatch: Colors.orange,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: MyHomePage(title: 'Flutter Demo Home Page'),
@@ -34,16 +37,14 @@ class _MyHomePageState extends State<MyHomePage> {
 
   List<Text> _items = [];
 
+  ItemProvider itemSource = new ItemProvider(http.Client());
+  Future<List<Item>> itemFutures;
+
   @override
   void initState() {
     super.initState();
-    _getInitialStoryIds();
-  }
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
+    itemFutures = itemSource.getItems(ListFilter.Top);
+    // _getInitialStoryIds();
   }
 
   void _getInitialStoryIds() async {
@@ -60,6 +61,15 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  Widget makeListView(List<Item> itemList) {
+    return ListView.builder(
+      itemBuilder: (context, index) {
+        return ItemListCard(key: Key(index.toString()), child: itemList[index]);
+      },
+      itemCount: itemList.length < 25 ? itemList.length : 25,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -67,11 +77,17 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: Center(
-        child: ListView.builder(
-          itemBuilder: (context, index) {
-            return _items[index];
+        child: FutureBuilder<List<Item>>(
+          future: itemFutures, // a previously-obtained Future<String> or null
+          builder: (BuildContext context, AsyncSnapshot<List<Item>> snapshot) {
+            if (snapshot.hasData) {
+              return makeListView(snapshot.data);
+            } else if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            } else {
+              return Text('Awaiting result...');
+            }
           },
-          itemCount: _items.length < 25 ? _items.length : 25,
         ),
       ),
     );
