@@ -29,3 +29,5 @@ Things to do
 - [ ] integration tests 
 - [ ] better styling on the list cards
 - [x] cards need to make their elements use percentage based sizing or something flexy
+- [ ] add an app icon and name so it's not just `hacker_news` with the default flutter icon on my phone 
+- [ ] better styling for "waiting" and "error" fetch states
