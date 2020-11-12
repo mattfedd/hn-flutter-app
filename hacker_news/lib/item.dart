@@ -113,4 +113,28 @@ class Item {
   static DateTime _getDateFromUnixTimestamp(int ts) {
     return DateTime.fromMillisecondsSinceEpoch(ts * 1000, isUtc: true);
   }
+
+  @override
+  String toString() {
+    var value = '''
+    {
+      id: ${this.id},
+      deleted: ${this.deleted},
+      type: ${this.type},
+      by: ${this.by},
+      time: ${this.time},
+      text: ${this.text},
+      dead: ${this.dead},
+      parent: ${this.parent},
+      poll: ${this.poll},
+      kids: ${this.kids},
+      url: ${this.url},
+      score: ${this.score},
+      title: ${this.title},
+      parts: ${this.parts},
+      descendants: ${this.descendants}
+    }''';
+
+    return value;
+  }
 }
