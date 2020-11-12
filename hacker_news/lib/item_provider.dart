@@ -27,11 +27,11 @@ class ItemProvider {
 
   final String baseURL = "https://hacker-news.firebaseio.com/v0/";
 
-  String filterToUrl(ListFilter filter) {
+  String _filterToUrl(ListFilter filter) {
     return baseURL + endpoints[filter] + ".json";
   }
 
-  Future<Item> getItemFromID(int id) async {
+  Future<Item> _getItemFromID(int id) async {
     var response = await client
         .get('https://hacker-news.firebaseio.com/v0/item/${id}.json');
 
@@ -42,12 +42,12 @@ class ItemProvider {
     }
   }
 
-  Future<List<Item>> getItemListFromIDs(List<int> ids) async {
-    return await Future.wait(ids.map((id) => this.getItemFromID(id)));
+  Future<List<Item>> _getItemListFromIDs(List<int> ids) async {
+    return await Future.wait(ids.map((id) => this._getItemFromID(id)));
   }
 
-  Future<List<int>> getIdList(ListFilter filter) async {
-    var response = await client.get(filterToUrl(filter));
+  Future<List<int>> _getIdList(ListFilter filter) async {
+    var response = await client.get(_filterToUrl(filter));
     if (response.statusCode == 200) {
       var result = jsonDecode(response.body).cast<int>();
       // limit it to 30
@@ -61,6 +61,6 @@ class ItemProvider {
   }
 
   Future<List<Item>> getItems(ListFilter filter) async {
-    return await getItemListFromIDs(await getIdList(filter));
+    return await _getItemListFromIDs(await _getIdList(filter));
   }
 }

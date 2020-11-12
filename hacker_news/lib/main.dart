@@ -33,40 +33,31 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  List<Text> _items = [];
-
-  ItemProvider itemSource = new ItemProvider(http.Client());
-  Future<List<Item>> itemFutures;
+  ItemProvider _itemSource = new ItemProvider(http.Client());
+  Future<List<Item>> _itemFutures;
 
   @override
   void initState() {
     super.initState();
-    itemFutures = itemSource.getItems(ListFilter.Top);
-    // _getInitialStoryIds();
+    _itemFutures = _itemSource.getItems(ListFilter.Top);
   }
 
-  void _getInitialStoryIds() async {
-    var response =
-        await http.get('https://hacker-news.firebaseio.com/v0/topstories.json');
-    print('Response status: ${response.statusCode}');
-    var body = jsonDecode(response.body);
-    print('Response body: ${body}');
-
+  Future<void> _refreshData() async {
     setState(() {
-      body.forEach((value) {
-        _items.add(Text("${value}"));
-      });
+      _itemFutures = _itemSource.getItems(ListFilter.Top);
     });
   }
 
   Widget makeListView(List<Item> itemList) {
-    return ListView.builder(
-      itemBuilder: (context, index) {
-        return ItemListCard(key: Key(index.toString()), child: itemList[index]);
-      },
-      itemCount: itemList.length < 25 ? itemList.length : 25,
+    return RefreshIndicator(
+      child: ListView.builder(
+        itemBuilder: (context, index) {
+          return ItemListCard(
+              key: Key(index.toString()), child: itemList[index]);
+        },
+        itemCount: itemList.length,
+      ),
+      onRefresh: _refreshData,
     );
   }
 
@@ -78,7 +69,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Center(
         child: FutureBuilder<List<Item>>(
-          future: itemFutures, // a previously-obtained Future<String> or null
+          future: _itemFutures,
           builder: (BuildContext context, AsyncSnapshot<List<Item>> snapshot) {
             if (snapshot.hasData) {
               return makeListView(snapshot.data);
