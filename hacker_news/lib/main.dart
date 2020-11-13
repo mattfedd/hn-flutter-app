@@ -138,7 +138,8 @@ class _MyHomePageState extends State<MyHomePage> {
             if (snapshot.hasData) {
               return makeListView(snapshot.data);
             } else if (snapshot.hasError) {
-              return Text('Error: ${snapshot.error}');
+              return Text('Error: ${snapshot.error}',
+                  style: Theme.of(context).textTheme.headline4);
             } else {
               return CircularProgressIndicator();
             }
