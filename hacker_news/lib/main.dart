@@ -33,16 +33,46 @@ class _MyHomePageState extends State<MyHomePage> {
   ItemProvider _itemSource = new ItemProvider(http.Client());
   Future<List<Item>> _itemFutures;
 
+  ListFilter _currentFilter = ListFilter.Top;
+  String _currentFilterString = "Top";
+
   @override
   void initState() {
     super.initState();
-    _itemFutures = _itemSource.getItems(ListFilter.Top);
+    _itemFutures = _itemSource.getItems(_currentFilter);
   }
 
   Future<void> _refreshData() async {
     setState(() {
-      _itemFutures = _itemSource.getItems(ListFilter.Top);
+      _itemFutures = _itemSource.getItems(_currentFilter);
     });
+  }
+
+  void _changeListFilter(String newValue) {
+    if (_currentFilterString == newValue) {
+      return;
+    }
+
+    setState(() {
+      switch (newValue) {
+        case "Top":
+          _currentFilter = ListFilter.Top;
+          break;
+        case "New":
+          _currentFilter = ListFilter.New;
+          break;
+        case "Ask":
+          _currentFilter = ListFilter.Ask;
+          break;
+        case "Jobs":
+          _currentFilter = ListFilter.Job;
+          break;
+      }
+
+      _currentFilterString = newValue;
+    });
+
+    _refreshData();
   }
 
   Widget makeListView(List<Item> itemList) {
@@ -70,8 +100,10 @@ class _MyHomePageState extends State<MyHomePage> {
               child: DropdownButton<String>(
                 style: Theme.of(context).textTheme.headline6,
                 isDense: true,
-                value: "Top",
-                onChanged: (String newValue) {},
+                value: _currentFilterString,
+                onChanged: (String newValue) {
+                  _changeListFilter(newValue);
+                },
                 items: <String>['Top', 'New', 'Jobs', 'Ask']
                     .map<DropdownMenuItem<String>>((String value) {
                   return DropdownMenuItem<String>(
