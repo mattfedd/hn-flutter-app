@@ -58,7 +58,7 @@ class ItemListCard extends StatelessWidget {
                                 softWrap: false,
                               ),
                             ),
-                            Text(" - "),
+                            Text(" · "),
                             Container(
                               alignment: Alignment.centerLeft,
                               child: Text(
@@ -75,8 +75,9 @@ class ItemListCard extends StatelessWidget {
                         ),
                         Container(
                           alignment: Alignment.centerLeft,
+                          margin: EdgeInsets.only(top: 0.0),
                           child: Text(
-                            child.url ?? "",
+                            child.url != null ? urlShortener(child.url) : "",
                             style: Theme.of(context).textTheme.caption,
                             overflow: TextOverflow.ellipsis,
                             softWrap: false,
@@ -105,7 +106,7 @@ class ItemListCard extends StatelessWidget {
   Widget _buildScoreTextDisplay() {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 5.0),
-      margin: EdgeInsets.only(left: 3.0),
+      margin: EdgeInsets.only(left: 3.0, bottom: 5.0),
       width: 50,
       alignment: Alignment.center,
       child: Text(
@@ -152,5 +153,61 @@ class ItemListCard extends StatelessWidget {
     }
 
     return "just now";
+  }
+
+  // gets the base/domain from an input url
+  // TODO: clean this up and add tests
+  static String urlShortener(String input) {
+    // remove http or https and :// from the start
+    int idx = input.indexOf("://");
+    String shortUrl = input.substring(idx + 3);
+
+    // check for www
+    if (shortUrl.startsWith("www")) {
+      // remove it
+      shortUrl = shortUrl.substring(4);
+    }
+
+    // check for first slash
+    idx = shortUrl.indexOf("/");
+    if (idx == -1) {
+      return shortUrl;
+    }
+
+    var shorterUrl = shortUrl.substring(0, idx);
+
+    // special cases: twitter.com --> check for second slash
+    if (shortUrl.startsWith("twitter")) {
+      idx = shortUrl.indexOf("/");
+      if (idx == -1) {
+        return shortUrl;
+      }
+
+      var second = shortUrl.substring(idx + 1).indexOf("/") + 1;
+      if (second - 1 == -1) {
+        return shortUrl;
+      }
+
+      shorterUrl = shortUrl.substring(0, idx + second);
+    }
+
+    // specialer case: github.com --> check for third slash!
+    if (shortUrl.startsWith("github")) {
+      idx = shortUrl.indexOf("/");
+      if (idx == -1) {
+        return shortUrl;
+      }
+      var second = shortUrl.substring(idx + 1).indexOf("/") + 1;
+      if (second - 1 == -1) {
+        return shortUrl;
+      }
+      var third = shortUrl.substring(idx + 1 + second + 1).indexOf("/") + 2;
+      if (third - 2 == -1) {
+        return shortUrl;
+      }
+      shorterUrl = shortUrl.substring(0, idx + second + third);
+    }
+
+    return shorterUrl;
   }
 }
