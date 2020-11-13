@@ -73,7 +73,7 @@ class _MyHomePageState extends State<MyHomePage> {
             } else if (snapshot.hasError) {
               return Text('Error: ${snapshot.error}');
             } else {
-              return Text('Awaiting result...');
+              return CircularProgressIndicator();
             }
           },
         ),
