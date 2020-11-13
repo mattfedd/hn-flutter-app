@@ -28,11 +28,11 @@ class ItemListCard extends StatelessWidget {
                 child.descendants != null
                     ? Column(
                         children: <Widget>[
-                          _buildScoreTextDisplay(),
+                          _buildScoreTextDisplay(context),
                           _buildCommentTextDisplay(),
                         ],
                       )
-                    : _buildScoreTextDisplay(),
+                    : _buildScoreTextDisplay(context),
                 Expanded(
                   child: Container(
                     padding:
@@ -103,7 +103,7 @@ class ItemListCard extends StatelessWidget {
     }
   }
 
-  Widget _buildScoreTextDisplay() {
+  Widget _buildScoreTextDisplay(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 5.0),
       margin: EdgeInsets.only(left: 3.0, bottom: 5.0),
@@ -111,7 +111,8 @@ class ItemListCard extends StatelessWidget {
       alignment: Alignment.center,
       child: Text(
         '${child.score}',
-        style: TextStyle(color: Colors.orange, fontWeight: FontWeight.bold),
+        style: TextStyle(
+            color: Theme.of(context).accentColor, fontWeight: FontWeight.bold),
       ),
     );
   }

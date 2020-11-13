@@ -15,8 +15,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Hacker News Reader',
-      theme: ThemeData.dark(),
-      home: MyHomePage(title: 'Hacker News'),
+      theme: ThemeData.dark().copyWith(accentColor: Colors.orange),
+      home: MyHomePage(title: 'HN'),
     );
   }
 }
@@ -62,7 +62,39 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Row(
+          children: <Widget>[
+            Text(widget.title),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: DropdownButton<String>(
+                style: Theme.of(context).textTheme.headline6,
+                isDense: true,
+                value: "Top",
+                onChanged: (String newValue) {},
+                items: <String>['Top', 'New', 'Jobs', 'Ask']
+                    .map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+              ),
+            )
+          ],
+        ),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            tooltip: 'Refresh',
+            onPressed: () {},
+          ),
+          IconButton(
+            icon: const Icon(Icons.settings),
+            tooltip: 'Settings',
+            onPressed: () {},
+          ),
+        ],
       ),
       body: Center(
         child: FutureBuilder<List<Item>>(
