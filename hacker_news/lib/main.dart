@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:hacker_news/item.dart';
 import 'package:hacker_news/item_list_card.dart';
 import 'package:hacker_news/item_provider.dart';
+import 'package:hacker_news/settings_page.dart';
 import 'package:http/http.dart' as http;
 
 void main() {
@@ -126,7 +127,12 @@ class _MyHomePageState extends State<MyHomePage> {
             child: IconButton(
               icon: const Icon(Icons.settings),
               tooltip: 'Settings',
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SettingsPage()),
+                );
+              },
             ),
           ),
         ],
