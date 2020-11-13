@@ -12,10 +12,10 @@ class ItemListCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(bottom: 1.0),
+      // margin: EdgeInsets.only(bottom: 0.000),
       padding: EdgeInsets.symmetric(vertical: 1.0),
       child: Material(
-        color: Colors.orange[100],
+        color: Theme.of(context).primaryColorDark,
         child: InkWell(
           onTap: () => child.url != null ? _launchURL(child.url) : {},
           child: Container(
@@ -23,8 +23,6 @@ class ItemListCard extends StatelessWidget {
             margin: EdgeInsets.symmetric(vertical: 4.0),
             padding: EdgeInsets.symmetric(vertical: 4.0),
             alignment: Alignment.centerLeft,
-            // color: Colors.grey,
-            // color: Colors.orange[300],
             child: Row(
               children: <Widget>[
                 child.descendants != null
@@ -37,15 +35,54 @@ class ItemListCard extends StatelessWidget {
                     : _buildScoreTextDisplay(),
                 Expanded(
                   child: Container(
-                    // alignment: Alignment.centerLeft,
-                    constraints: BoxConstraints(maxWidth: 350),
                     padding:
-                        EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
-                    // height: 60,
-                    // color: Colors.white70,
-                    child: Text(
-                      child.title ?? "",
-                      style: TextStyle(fontSize: 18),
+                        EdgeInsets.symmetric(horizontal: 10.0, vertical: 1.0),
+                    child: Column(
+                      children: <Widget>[
+                        Container(
+                          alignment: Alignment.centerLeft,
+                          margin: EdgeInsets.only(bottom: 4.0),
+                          child: Text(
+                            child.title ?? "",
+                            style: Theme.of(context).textTheme.headline6,
+                          ),
+                        ),
+                        Row(
+                          children: <Widget>[
+                            Container(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                child.by != null ? "by ${child.by}" : "",
+                                style: Theme.of(context).textTheme.caption,
+                                overflow: TextOverflow.ellipsis,
+                                softWrap: false,
+                              ),
+                            ),
+                            Text(" - "),
+                            Container(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                child.time != null
+                                    ? howLongAgo(
+                                        DateTime.now().toUtc(), child.time)
+                                    : "",
+                                style: Theme.of(context).textTheme.caption,
+                                overflow: TextOverflow.ellipsis,
+                                softWrap: false,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Container(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            child.url ?? "",
+                            style: Theme.of(context).textTheme.caption,
+                            overflow: TextOverflow.ellipsis,
+                            softWrap: false,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -71,7 +108,10 @@ class ItemListCard extends StatelessWidget {
       margin: EdgeInsets.only(left: 3.0),
       width: 50,
       alignment: Alignment.center,
-      child: Text('${child.score} ^'),
+      child: Text(
+        '${child.score}',
+        style: TextStyle(color: Colors.orange, fontWeight: FontWeight.bold),
+      ),
     );
   }
 
@@ -81,7 +121,36 @@ class ItemListCard extends StatelessWidget {
       margin: EdgeInsets.only(left: 3.0),
       width: 50,
       alignment: Alignment.center,
-      child: Text('${child.descendants} c'),
+      child: Text('${child.descendants}'),
     );
+  }
+
+  // TODO: move this into a utility file as a static function or something.
+  // TODO: add tests
+  String howLongAgo(DateTime now, DateTime then) {
+    if (now.isBefore(then)) {
+      // problemo: should not be this way
+      return "";
+    }
+
+    var difference = now.difference(then);
+
+    if (difference.inDays >= 1) {
+      return "${difference.inDays}d ago";
+    }
+
+    if (difference.inHours >= 1) {
+      return "${difference.inHours}h ago";
+    }
+
+    if (difference.inMinutes >= 1) {
+      return "${difference.inMinutes}m ago";
+    }
+
+    if (difference.inSeconds >= 1) {
+      return "${difference.inSeconds}s ago";
+    }
+
+    return "just now";
   }
 }
