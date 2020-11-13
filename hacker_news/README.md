@@ -15,7 +15,7 @@ Things to do
 - [ ] some sort of fetch operation to get more stories as user scrolls further
 - [ ] some sort of caching to get a bunch of stories up front and not require internet for every refresh
 - [x] some sort of basic styling on the list items
-- [ ] switch between story list modes above (top, new, best, etc), selectable from some kind of list/dropdown/option
+- [x] switch between story list modes above (top, new, best, etc), selectable from some kind of list/dropdown/option
 - [x] clicking a story title opens the link in a browser
 - [ ] make a new window for comment viewing
 - [ ] use some sort of BFS with depth limits to get comments in a nice way
@@ -30,4 +30,5 @@ Things to do
 - [ ] better styling on the list cards
 - [x] cards need to make their elements use percentage based sizing or something flexy
 - [ ] add an app icon and name so it's not just `hacker_news` with the default flutter icon on my phone 
-- [ ] better styling for "waiting" and "error" fetch states
+- [x] better styling for "waiting" and "error" fetch states
+- [ ] show some kind of indication when refreshing or fetching state. Alternatively, an animation when fetching finishes?
