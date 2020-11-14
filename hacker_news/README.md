@@ -17,8 +17,8 @@ Things to do
 - [x] some sort of basic styling on the list items
 - [x] switch between story list modes above (top, new, best, etc), selectable from some kind of list/dropdown/option
 - [x] clicking a story title opens the link in a browser
-- [ ] make a new window for comment viewing
-- [ ] use some sort of BFS with depth limits to get comments in a nice way
+- [x] make a new window for comment viewing
+- [x] use some sort of BFS with depth limits to get comments in a nice way
 - [ ] cache fetched comment tree structure somehow
 - [ ] clicking something on the story title in the list, opens comment view window
 - [ ] ability to favorite a story or comment
@@ -32,3 +32,9 @@ Things to do
 - [ ] add an app icon and name so it's not just `hacker_news` with the default flutter icon on my phone 
 - [x] better styling for "waiting" and "error" fetch states
 - [ ] show some kind of indication when refreshing or fetching state. Alternatively, an animation when fetching finishes?
+- [ ] comment body is raw HTML, needs to be processed into rich text with clickable URLs and styling
+- [ ] depth of comments needs better visual indication
+- [ ] consolidate all helper functions such as launchURL etc
+- [ ] option to open comment or url directly from main list view
+- [ ] collapsible comments
+- [ ] start profiling memory and network usage
