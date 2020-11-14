@@ -31,7 +31,7 @@ class ItemProvider {
     return baseURL + endpoints[filter] + ".json";
   }
 
-  Future<Item> _getItemFromID(int id) async {
+  Future<Item> getItemFromID(int id) async {
     var response = await client
         .get('https://hacker-news.firebaseio.com/v0/item/${id}.json');
 
@@ -43,7 +43,7 @@ class ItemProvider {
   }
 
   Future<List<Item>> _getItemListFromIDs(List<int> ids) async {
-    return await Future.wait(ids.map((id) => this._getItemFromID(id)));
+    return await Future.wait(ids.map((id) => this.getItemFromID(id)));
   }
 
   Future<List<int>> _getIdList(ListFilter filter) async {

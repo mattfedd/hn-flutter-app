@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:hacker_news/comments_page.dart';
 import 'package:hacker_news/item.dart';
 
 import 'package:url_launcher/url_launcher.dart';
@@ -17,7 +18,14 @@ class ItemListCard extends StatelessWidget {
       child: Material(
         color: Theme.of(context).primaryColorDark,
         child: InkWell(
-          onTap: () => child.url != null ? _launchURL(child.url) : {},
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => CommentsPage(parentItem: child)),
+            );
+          },
+          // onTap: () => child.url != null ? _launchURL(child.url) : {},
           child: Container(
             constraints: BoxConstraints(minHeight: 48),
             margin: EdgeInsets.symmetric(vertical: 4.0),
