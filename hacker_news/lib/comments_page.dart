@@ -20,15 +20,19 @@ class _CommentsPageState extends State<CommentsPage> {
       CommentsProvider(ItemProvider(http.Client()));
   Future<List<WithDepth<Item>>> _commentFutures;
 
+  final int _commentLimit = 100;
+
   @override
   void initState() {
     super.initState();
-    _commentFutures = _commentSource.getAllComments(widget.parentItem.id, 10);
+    _commentFutures =
+        _commentSource.getAllComments(widget.parentItem.id, _commentLimit);
   }
 
   Future<void> _refreshData() async {
     setState(() {
-      _commentFutures = _commentSource.getAllComments(widget.parentItem.id, 10);
+      _commentFutures =
+          _commentSource.getAllComments(widget.parentItem.id, _commentLimit);
     });
   }
 
