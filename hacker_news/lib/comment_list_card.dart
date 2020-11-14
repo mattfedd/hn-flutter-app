@@ -14,7 +14,6 @@ class CommentListCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      // margin: EdgeInsets.only(bottom: 0.000),
       padding: EdgeInsets.symmetric(vertical: 1.0),
       child: Material(
         color: Theme.of(context).primaryColorDark,
@@ -75,7 +74,7 @@ class CommentListCard extends StatelessWidget {
   }
 
   Widget _buildDepthMarkers(BuildContext context) {
-    if (depth >= 1) {
+    if (depth > 1) {
       return Container(width: 1, color: Colors.red, child: Text("${depth}"));
     } else {
       return Container();

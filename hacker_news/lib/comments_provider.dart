@@ -14,17 +14,25 @@ class CommentsProvider {
   CommentsProvider(this.ip);
 
   Future<List<WithDepth<Item>>> getAllComments(int parentId, int limit) async {
-    List<WithDepth<int>> idsToCheck = [WithDepth<int>(parentId, 1)];
+    List<WithDepth<int>> idsToCheck = [WithDepth<int>(parentId, 0)];
     List<WithDepth<Item>> itemsToReturn = [];
 
     while (idsToCheck.isNotEmpty) {
-      if (itemsToReturn.length >= limit) {
+      if (itemsToReturn.length > limit + 2) {
+        // remove first item (parent) before returning
+        itemsToReturn.removeAt(0);
         return itemsToReturn;
       }
       // get first item from queue
       var id = idsToCheck.removeAt(0);
 
       Item item = await ip.getItemFromID(id.value);
+
+      // corner case to catch some invalid comments
+      if (item.by == null) {
+        continue;
+      }
+
       itemsToReturn.add(WithDepth<Item>(item, id.depth));
 
       // prepend next ids to the front of the queue (DFS)
@@ -35,6 +43,8 @@ class CommentsProvider {
       }
     }
 
+    // remove first item (parent) before returning
+    itemsToReturn.removeAt(0);
     return itemsToReturn;
   }
 }
