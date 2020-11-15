@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:hacker_news/comments_page.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:hacker_news/item.dart';
-
 import 'package:url_launcher/url_launcher.dart';
 
 class CommentListCard extends StatelessWidget {
@@ -11,71 +10,113 @@ class CommentListCard extends StatelessWidget {
 
   const CommentListCard({Key key, this.child, this.depth}) : super(key: key);
 
+  Color _depthToColor(int val) {
+    List<Color> colors = [
+      Colors.red,
+      Colors.orange,
+      Colors.yellow,
+      Colors.green,
+      Colors.blue,
+      Colors.teal,
+      Colors.purple,
+      Colors.pink,
+    ];
+    int index = (val - 2) % colors.length;
+    return colors[index];
+  }
+
+  final int depthBarWidth = 2;
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 1.0),
-      child: Material(
-        color: Theme.of(context).primaryColorDark,
-        child: IntrinsicHeight(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              _buildDepthMarkers(context),
-              Expanded(
-                child: Container(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 10.0, vertical: 1.0),
+    return Material(
+      textStyle: Theme.of(context).textTheme.bodyText2,
+      color: Theme.of(context).primaryColorDark,
+      child: Stack(
+        children: <Widget>[
+          Positioned.fill(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: Row(
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: depthBarWidth * 1.0 * (depth - 1)),
+                  child: _buildDepthMarkers(context, depth),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(left: depthBarWidth * 1.0 * (depth - 1)),
+            child: Row(
+              children: <Widget>[
+                Expanded(
                   child: Column(
                     children: <Widget>[
-                      Row(
-                        children: <Widget>[
-                          Container(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              child.by != null ? "by ${child.by}" : "",
-                              style: Theme.of(context).textTheme.caption,
-                              overflow: TextOverflow.ellipsis,
-                              softWrap: false,
-                            ),
-                          ),
-                          Text(" · "),
-                          Container(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              child.time != null
-                                  ? howLongAgo(
-                                      DateTime.now().toUtc(), child.time)
-                                  : "",
-                              style: Theme.of(context).textTheme.caption,
-                              overflow: TextOverflow.ellipsis,
-                              softWrap: false,
-                            ),
-                          ),
-                        ],
-                      ),
+                      Divider(height: 2, color: Colors.grey[900]),
                       Container(
                         alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.only(bottom: 4.0),
-                        child: Text(
-                          child.text ?? "",
-                          style: Theme.of(context).textTheme.bodyText2,
+                        padding: EdgeInsets.only(top: 4, left: 7),
+                        child: Row(
+                          children: <Widget>[
+                            Container(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                child.by != null ? "by ${child.by}" : "",
+                                style: Theme.of(context).textTheme.caption,
+                                overflow: TextOverflow.ellipsis,
+                                softWrap: false,
+                              ),
+                            ),
+                            Text(" · "),
+                            Container(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                child.time != null
+                                    ? howLongAgo(
+                                        DateTime.now().toUtc(), child.time)
+                                    : "",
+                                style: Theme.of(context).textTheme.caption,
+                                overflow: TextOverflow.ellipsis,
+                                softWrap: false,
+                              ),
+                            ),
+                          ],
                         ),
+                      ),
+                      Html(
+                        data: child.text,
+                        onLinkTap: (url) {
+                          _launchURL(url);
+                        },
                       ),
                     ],
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
 
-  Widget _buildDepthMarkers(BuildContext context) {
-    if (depth > 1) {
-      return Container(width: 1, color: Colors.red, child: Text("${depth}"));
+  _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
+  Widget _buildDepthMarkers(BuildContext context, int d) {
+    if (d > 1) {
+      return Container(
+        width: depthBarWidth * 1.0,
+        color: _depthToColor(d),
+      );
     } else {
       return Container();
     }
