@@ -32,9 +32,11 @@ Things to do
 - [ ] add an app icon and name so it's not just `hacker_news` with the default flutter icon on my phone 
 - [x] better styling for "waiting" and "error" fetch states
 - [ ] show some kind of indication when refreshing or fetching state. Alternatively, an animation when fetching finishes?
-- [ ] comment body is raw HTML, needs to be processed into rich text with clickable URLs and styling
-- [ ] depth of comments needs better visual indication
+- [x] comment body is raw HTML, needs to be processed into rich text with clickable URLs and styling
+- [x] depth of comments needs better visual indication
 - [ ] consolidate all helper functions such as launchURL etc
 - [ ] option to open comment or url directly from main list view
 - [ ] collapsible comments
 - [ ] start profiling memory and network usage
+- [ ] definitely feels like comments are taking too long to load. Is there a better, faster way to load them?
+- [ ] in the "comments" page, the top would be nice to only load when scrolling up. I think SliverAppBar and SliverList can help here? Maybe try sliver list instead of list view in some places.

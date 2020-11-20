@@ -64,7 +64,7 @@ class CommentListCard extends StatelessWidget {
                             Container(
                               alignment: Alignment.centerLeft,
                               child: Text(
-                                child.by != null ? "by ${child.by}" : "",
+                                child.by != null ? "${child.by}" : "",
                                 style: Theme.of(context).textTheme.caption,
                                 overflow: TextOverflow.ellipsis,
                                 softWrap: false,
