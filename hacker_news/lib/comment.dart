@@ -3,8 +3,8 @@ import 'package:hacker_news/item.dart';
 class Comment extends Item {
   final Item i;
   final int depth;
-  final List<int> parents;
-  Comment(this.i, this.depth, this.parents);
+  List<int> children = [];
+  Comment(this.i, this.depth);
 
   int get id => i.id;
   bool get deleted => i.deleted;

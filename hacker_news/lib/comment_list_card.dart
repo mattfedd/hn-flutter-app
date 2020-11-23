@@ -6,9 +6,16 @@ import 'package:url_launcher/url_launcher.dart';
 
 class CommentListCard extends StatelessWidget {
   final Comment child;
+  final bool hasCollapsedChildren;
+  final bool isCollapsed;
   final Function onTapHandler;
 
-  const CommentListCard({Key key, this.child, this.onTapHandler})
+  const CommentListCard(
+      {Key key,
+      this.child,
+      this.isCollapsed,
+      this.hasCollapsedChildren,
+      this.onTapHandler})
       : super(key: key);
 
   Color _depthToColor(int val) {
@@ -30,81 +37,125 @@ class CommentListCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      textStyle: Theme.of(context).textTheme.bodyText2,
-      color: Theme.of(context).primaryColorDark,
-      child: InkWell(
-        onTap: onTapHandler ?? () {},
-        child: Stack(
-          children: <Widget>[
-            Positioned.fill(
-              top: 0,
-              left: 0,
-              right: 0,
-              child: Row(
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: depthBarWidth * 1.0 * (child.depth - 1)),
-                    child: _buildDepthMarkers(context, child.depth),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                  left: depthBarWidth * 1.0 * (child.depth - 1)),
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                    child: Column(
-                      children: <Widget>[
-                        Divider(height: 2, color: Colors.grey[900]),
-                        Container(
-                          alignment: Alignment.centerLeft,
-                          padding: EdgeInsets.only(top: 4, left: 7),
-                          child: Row(
-                            children: <Widget>[
-                              Container(
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  child.by != null ? "${child.by}" : "",
-                                  style: Theme.of(context).textTheme.caption,
-                                  overflow: TextOverflow.ellipsis,
-                                  softWrap: false,
-                                ),
-                              ),
-                              Text(" · "),
-                              Container(
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  child.time != null
-                                      ? howLongAgo(
-                                          DateTime.now().toUtc(), child.time)
-                                      : "",
-                                  style: Theme.of(context).textTheme.caption,
-                                  overflow: TextOverflow.ellipsis,
-                                  softWrap: false,
-                                ),
-                              ),
-                            ],
+    return AnimatedSwitcher(
+      duration: Duration(milliseconds: 150),
+      switchInCurve: Curves.easeInOut,
+      transitionBuilder: (Widget child, Animation<double> animation) {
+        return SizeTransition(
+            sizeFactor: animation,
+            axis: Axis.vertical,
+            axisAlignment: -1,
+            child: child);
+      },
+      child: isCollapsed
+          ? Container(key: Key("empty"))
+          : Material(
+              key: Key("card"),
+              textStyle: Theme.of(context).textTheme.bodyText2,
+              color: Theme.of(context).primaryColorDark,
+              child: InkWell(
+                onTap: onTapHandler ?? () {},
+                child: Stack(
+                  children: <Widget>[
+                    Positioned.fill(
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      child: Row(
+                        children: <Widget>[
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal:
+                                    depthBarWidth * 1.0 * (child.depth - 1)),
+                            child: _buildDepthMarkers(context, child.depth),
                           ),
-                        ),
-                        Html(
-                          data: child.text,
-                          onLinkTap: (url) {
-                            _launchURL(url);
-                          },
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                    Padding(
+                      padding: EdgeInsets.only(
+                          left: depthBarWidth * 1.0 * (child.depth - 1)),
+                      child: Row(
+                        children: <Widget>[
+                          Expanded(
+                            child: Column(
+                              children: <Widget>[
+                                Divider(height: 2, color: Colors.grey[800]),
+                                Container(
+                                  alignment: Alignment.centerLeft,
+                                  padding: EdgeInsets.only(top: 4, left: 7),
+                                  child: Row(
+                                    children: <Widget>[
+                                      Container(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          child.by != null ? "${child.by}" : "",
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .caption,
+                                          overflow: TextOverflow.ellipsis,
+                                          softWrap: false,
+                                        ),
+                                      ),
+                                      Text(" · "),
+                                      Container(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          child.time != null
+                                              ? howLongAgo(
+                                                  DateTime.now().toUtc(),
+                                                  child.time)
+                                              : "",
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .caption,
+                                          overflow: TextOverflow.ellipsis,
+                                          softWrap: false,
+                                        ),
+                                      ),
+                                      hasCollapsedChildren
+                                          ? Expanded(
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 18.0),
+                                                child: Align(
+                                                  alignment:
+                                                      Alignment.centerRight,
+                                                  child: Container(
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                              horizontal: 5.0),
+                                                      color: Colors.green,
+                                                      child: Text(
+                                                          "+${child.children.length}",
+                                                          style:
+                                                              Theme.of(context)
+                                                                  .textTheme
+                                                                  .caption)),
+                                                ),
+                                              ),
+                                            )
+                                          : Container()
+                                    ],
+                                  ),
+                                ),
+                                Html(
+                                  data: child.text,
+                                  onLinkTap: (url) {
+                                    _launchURL(url);
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ],
-        ),
-      ),
     );
   }
 

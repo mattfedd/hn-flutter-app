@@ -37,6 +37,18 @@ class _CommentsPageState extends State<CommentsPage> {
     });
   }
 
+  List<int> _tappedIds = [];
+  void _commentCardTapHandler(int id) {
+    setState(() {
+      if (_tappedIds.contains(id)) {
+        _tappedIds.remove(id);
+      } else {
+        _tappedIds.add(id);
+      }
+      print(_tappedIds);
+    });
+  }
+
   Widget makeListView(List<Comment> itemList) {
     return Expanded(
       child: RefreshIndicator(
@@ -45,6 +57,15 @@ class _CommentsPageState extends State<CommentsPage> {
             return CommentListCard(
               key: Key(index.toString()),
               child: itemList[index],
+              hasCollapsedChildren: _tappedIds.contains(index),
+              isCollapsed: _tappedIds
+                  .where((id) =>
+                      itemList[id].children.contains(itemList[index].id))
+                  .isNotEmpty,
+              onTapHandler: () {
+                print("children: ${itemList[index].children}");
+                _commentCardTapHandler(index);
+              },
             );
           },
           itemCount: itemList.length,
