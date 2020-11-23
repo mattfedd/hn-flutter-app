@@ -16,6 +16,15 @@ class ItemProvider {
 
   ItemProvider(this.client);
 
+  final Map<ListFilter, List<int>> _storyIds = {
+    ListFilter.Top: [],
+    ListFilter.New: [],
+    ListFilter.Best: [],
+    ListFilter.Ask: [],
+    ListFilter.Show: [],
+    ListFilter.Job: [],
+  };
+
   final Map<ListFilter, String> endpoints = {
     ListFilter.Top: "topstories",
     ListFilter.New: "newstories",
@@ -50,10 +59,6 @@ class ItemProvider {
     var response = await client.get(_filterToUrl(filter));
     if (response.statusCode == 200) {
       var result = jsonDecode(response.body).cast<int>();
-      // limit it to 30
-      if (result.length > 30) {
-        result = result.sublist(0, 29);
-      }
       return result;
     } else {
       throw Exception("Failed to get ID list from server");
@@ -62,5 +67,28 @@ class ItemProvider {
 
   Future<List<Item>> getItems(ListFilter filter) async {
     return await _getItemListFromIDs(await _getIdList(filter));
+  }
+
+  bool locked = false;
+
+  Future<List<Item>> getItemsInRange(ListFilter filter, int lo, int hi) async {
+    if (_storyIds == null || _storyIds[filter].isEmpty) {
+      _storyIds[filter] = await _getIdList(filter);
+    }
+
+    locked = false;
+
+    if (hi > _storyIds[filter].length) {
+      // problem
+      hi = _storyIds[filter].length;
+    }
+
+    if (hi < lo) {
+      // a different problem
+      // return null?
+    }
+
+    return await Future.wait(
+        _storyIds[filter].sublist(lo, hi).map((id) => getItemFromID(id)));
   }
 }
