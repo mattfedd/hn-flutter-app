@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hacker_news/comment.dart';
 import 'package:hacker_news/comment_list_card.dart';
 import 'package:hacker_news/comments_provider.dart';
 import 'package:hacker_news/item.dart';
@@ -18,7 +19,7 @@ class CommentsPage extends StatefulWidget {
 class _CommentsPageState extends State<CommentsPage> {
   CommentsProvider _commentSource =
       CommentsProvider(ItemProvider(http.Client()));
-  Future<List<WithDepth<Item>>> _commentFutures;
+  Future<List<Comment>> _commentFutures;
 
   final int _commentLimit = 100;
 
@@ -36,15 +37,14 @@ class _CommentsPageState extends State<CommentsPage> {
     });
   }
 
-  Widget makeListView(List<WithDepth<Item>> itemList) {
+  Widget makeListView(List<Comment> itemList) {
     return Expanded(
       child: RefreshIndicator(
         child: ListView.builder(
           itemBuilder: (context, index) {
             return CommentListCard(
               key: Key(index.toString()),
-              child: itemList[index].value,
-              depth: itemList[index].depth,
+              child: itemList[index],
             );
           },
           itemCount: itemList.length,
@@ -81,10 +81,10 @@ class _CommentsPageState extends State<CommentsPage> {
               ),
             ),
           ),
-          FutureBuilder<List<WithDepth<Item>>>(
+          FutureBuilder<List<Comment>>(
             future: _commentFutures,
-            builder: (BuildContext context,
-                AsyncSnapshot<List<WithDepth<Item>>> snapshot) {
+            builder:
+                (BuildContext context, AsyncSnapshot<List<Comment>> snapshot) {
               if (snapshot.hasData) {
                 return makeListView(snapshot.data);
               } else if (snapshot.hasError) {

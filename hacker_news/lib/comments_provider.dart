@@ -1,3 +1,4 @@
+import 'package:hacker_news/comment.dart';
 import 'package:hacker_news/item.dart';
 import 'package:hacker_news/item_provider.dart';
 
@@ -13,9 +14,9 @@ class CommentsProvider {
 
   CommentsProvider(this.ip);
 
-  Future<List<WithDepth<Item>>> getAllComments(int parentId, int limit) async {
+  Future<List<Comment>> getAllComments(int parentId, int limit) async {
     List<WithDepth<int>> idsToCheck = [WithDepth<int>(parentId, 0)];
-    List<WithDepth<Item>> itemsToReturn = [];
+    List<Comment> itemsToReturn = [];
 
     while (idsToCheck.isNotEmpty) {
       if (itemsToReturn.length > limit + 2) {
@@ -26,14 +27,19 @@ class CommentsProvider {
       // get first item from queue
       var id = idsToCheck.removeAt(0);
 
-      Item item = await ip.getItemFromID(id.value);
+      Item result = await ip.getItemFromID(id.value);
+      List<int> parents = idsToCheck.length > 1
+          ? idsToCheck.sublist(1).map((e) => e.value).toList()
+          : [];
+
+      Comment item = Comment(result, id.depth, parents);
 
       // corner case to catch some invalid comments
       if (item.by == null) {
         continue;
       }
 
-      itemsToReturn.add(WithDepth<Item>(item, id.depth));
+      itemsToReturn.add(item);
 
       // prepend next ids to the front of the queue (DFS)
       if (!(item.kids == null || item.kids.isEmpty || id.depth >= 10)) {

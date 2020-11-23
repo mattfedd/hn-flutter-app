@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:hacker_news/item.dart';
+import 'package:hacker_news/comment.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class CommentListCard extends StatelessWidget {
-  final Item child;
-  final int depth;
+  final Comment child;
+  final Function onTapHandler;
 
-  const CommentListCard({Key key, this.child, this.depth}) : super(key: key);
+  const CommentListCard({Key key, this.child, this.onTapHandler})
+      : super(key: key);
 
   Color _depthToColor(int val) {
     List<Color> colors = [
@@ -32,73 +33,77 @@ class CommentListCard extends StatelessWidget {
     return Material(
       textStyle: Theme.of(context).textTheme.bodyText2,
       color: Theme.of(context).primaryColorDark,
-      child: Stack(
-        children: <Widget>[
-          Positioned.fill(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: Row(
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                      horizontal: depthBarWidth * 1.0 * (depth - 1)),
-                  child: _buildDepthMarkers(context, depth),
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(left: depthBarWidth * 1.0 * (depth - 1)),
-            child: Row(
-              children: <Widget>[
-                Expanded(
-                  child: Column(
-                    children: <Widget>[
-                      Divider(height: 2, color: Colors.grey[900]),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        padding: EdgeInsets.only(top: 4, left: 7),
-                        child: Row(
-                          children: <Widget>[
-                            Container(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                child.by != null ? "${child.by}" : "",
-                                style: Theme.of(context).textTheme.caption,
-                                overflow: TextOverflow.ellipsis,
-                                softWrap: false,
-                              ),
-                            ),
-                            Text(" · "),
-                            Container(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                child.time != null
-                                    ? howLongAgo(
-                                        DateTime.now().toUtc(), child.time)
-                                    : "",
-                                style: Theme.of(context).textTheme.caption,
-                                overflow: TextOverflow.ellipsis,
-                                softWrap: false,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Html(
-                        data: child.text,
-                        onLinkTap: (url) {
-                          _launchURL(url);
-                        },
-                      ),
-                    ],
+      child: InkWell(
+        onTap: onTapHandler ?? () {},
+        child: Stack(
+          children: <Widget>[
+            Positioned.fill(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: Row(
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: depthBarWidth * 1.0 * (child.depth - 1)),
+                    child: _buildDepthMarkers(context, child.depth),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+            Padding(
+              padding: EdgeInsets.only(
+                  left: depthBarWidth * 1.0 * (child.depth - 1)),
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    child: Column(
+                      children: <Widget>[
+                        Divider(height: 2, color: Colors.grey[900]),
+                        Container(
+                          alignment: Alignment.centerLeft,
+                          padding: EdgeInsets.only(top: 4, left: 7),
+                          child: Row(
+                            children: <Widget>[
+                              Container(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  child.by != null ? "${child.by}" : "",
+                                  style: Theme.of(context).textTheme.caption,
+                                  overflow: TextOverflow.ellipsis,
+                                  softWrap: false,
+                                ),
+                              ),
+                              Text(" · "),
+                              Container(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  child.time != null
+                                      ? howLongAgo(
+                                          DateTime.now().toUtc(), child.time)
+                                      : "",
+                                  style: Theme.of(context).textTheme.caption,
+                                  overflow: TextOverflow.ellipsis,
+                                  softWrap: false,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Html(
+                          data: child.text,
+                          onLinkTap: (url) {
+                            _launchURL(url);
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
