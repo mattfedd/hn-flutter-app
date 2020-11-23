@@ -65,18 +65,10 @@ class ItemProvider {
     }
   }
 
-  Future<List<Item>> getItems(ListFilter filter) async {
-    return await _getItemListFromIDs(await _getIdList(filter));
-  }
-
-  bool locked = false;
-
   Future<List<Item>> getItemsInRange(ListFilter filter, int lo, int hi) async {
     if (_storyIds == null || _storyIds[filter].isEmpty) {
       _storyIds[filter] = await _getIdList(filter);
     }
-
-    locked = false;
 
     if (hi > _storyIds[filter].length) {
       // problem

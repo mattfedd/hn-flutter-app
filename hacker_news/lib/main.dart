@@ -56,7 +56,6 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   int _refreshCount = 0;
-
   Future<void> _refreshData() async {
     setState(() {
       _refreshCount++;
