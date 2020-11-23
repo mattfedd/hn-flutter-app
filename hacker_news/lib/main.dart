@@ -1,11 +1,7 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:hacker_news/item.dart';
-import 'package:hacker_news/item_list_card.dart';
+import 'package:hacker_news/item_list.dart';
 import 'package:hacker_news/item_provider.dart';
 import 'package:hacker_news/settings_page.dart';
-import 'package:http/http.dart' as http;
 
 void main() {
   runApp(MyApp());
@@ -31,21 +27,43 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  ItemProvider _itemSource = new ItemProvider(http.Client());
-  Future<List<Item>> _itemFutures;
-
   ListFilter _currentFilter = ListFilter.Top;
   String _currentFilterString = "Top";
+
+  ItemList _currentItemList;
+
+  Map<ListFilter, ItemList> _itemLists = {
+    ListFilter.Top: new ItemList(
+        key: Key(ListFilter.Top.toString()), filter: ListFilter.Top),
+    ListFilter.New: new ItemList(
+        key: Key(ListFilter.New.toString()), filter: ListFilter.New),
+    ListFilter.Best: new ItemList(
+        key: Key(ListFilter.Best.toString()), filter: ListFilter.Best),
+    ListFilter.Ask: new ItemList(
+        key: Key(ListFilter.Ask.toString()), filter: ListFilter.Ask),
+    ListFilter.Show: new ItemList(
+        key: Key(ListFilter.Show.toString()), filter: ListFilter.Show),
+    ListFilter.Job: new ItemList(
+        key: Key(ListFilter.Job.toString()), filter: ListFilter.Job),
+  };
 
   @override
   void initState() {
     super.initState();
-    _itemFutures = _itemSource.getItems(_currentFilter);
+    setState(() {
+      _currentItemList = _itemLists[_currentFilter];
+    });
   }
+
+  int _refreshCount = 0;
 
   Future<void> _refreshData() async {
     setState(() {
-      _itemFutures = _itemSource.getItems(_currentFilter);
+      _refreshCount++;
+      _itemLists[_currentFilter] = new ItemList(
+          key: Key(_currentFilter.toString() + _refreshCount.toString()),
+          filter: _currentFilter);
+      _currentItemList = _itemLists[_currentFilter];
     });
   }
 
@@ -71,22 +89,8 @@ class _MyHomePageState extends State<MyHomePage> {
       }
 
       _currentFilterString = newValue;
+      _currentItemList = _itemLists[_currentFilter];
     });
-
-    _refreshData();
-  }
-
-  Widget makeListView(List<Item> itemList) {
-    return RefreshIndicator(
-      child: ListView.builder(
-        itemBuilder: (context, index) {
-          return ItemListCard(
-              key: Key(index.toString()), child: itemList[index]);
-        },
-        itemCount: itemList.length,
-      ),
-      onRefresh: _refreshData,
-    );
   }
 
   @override
@@ -138,19 +142,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       ),
       body: Center(
-        child: FutureBuilder<List<Item>>(
-          future: _itemFutures,
-          builder: (BuildContext context, AsyncSnapshot<List<Item>> snapshot) {
-            if (snapshot.hasData) {
-              return makeListView(snapshot.data);
-            } else if (snapshot.hasError) {
-              return Text('Error: ${snapshot.error}',
-                  style: Theme.of(context).textTheme.headline4);
-            } else {
-              return CircularProgressIndicator();
-            }
-          },
-        ),
+        child: _currentItemList,
       ),
     );
   }
