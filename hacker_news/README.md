@@ -12,7 +12,7 @@ Things to do
 - [x] get initial story IDs to make a list 
 - [x] find a way to get each story title, probably async for each one? 
 - [x] display the list of stories in a list
-- [ ] some sort of fetch operation to get more stories as user scrolls further
+- [x] some sort of fetch operation to get more stories as user scrolls further
 - [ ] some sort of caching to get a bunch of stories up front and not require internet for every refresh
 - [x] some sort of basic styling on the list items
 - [x] switch between story list modes above (top, new, best, etc), selectable from some kind of list/dropdown/option
@@ -31,7 +31,7 @@ Things to do
 - [x] cards need to make their elements use percentage based sizing or something flexy
 - [ ] add an app icon and name so it's not just `hacker_news` with the default flutter icon on my phone 
 - [x] better styling for "waiting" and "error" fetch states
-- [ ] show some kind of indication when refreshing or fetching state. Alternatively, an animation when fetching finishes?
+- [x] show some kind of indication when refreshing or fetching state. Alternatively, an animation when fetching finishes?
 - [x] comment body is raw HTML, needs to be processed into rich text with clickable URLs and styling
 - [x] depth of comments needs better visual indication
 - [ ] consolidate all helper functions such as launchURL etc
