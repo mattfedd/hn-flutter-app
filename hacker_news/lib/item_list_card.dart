@@ -201,7 +201,7 @@ class ItemListCard extends StatelessWidget {
     }
 
     // specialer case: github.com --> check for third slash!
-    if (shortUrl.startsWith("github")) {
+    if (shortUrl.startsWith("github.com")) {
       idx = shortUrl.indexOf("/");
       if (idx == -1) {
         return shortUrl;
