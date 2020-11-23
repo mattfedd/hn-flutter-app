@@ -41,8 +41,8 @@ class ItemProvider {
   }
 
   Future<Item> getItemFromID(int id) async {
-    var response = await client
-        .get('https://hacker-news.firebaseio.com/v0/item/${id}.json');
+    var response =
+        await client.get('https://hacker-news.firebaseio.com/v0/item/$id.json');
 
     if (response.statusCode == 200) {
       return Item.fromJson(jsonDecode(response.body));
