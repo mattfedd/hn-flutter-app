@@ -25,19 +25,7 @@ class CommentsProvider {
       // get first item from queue
       var id = idsToCheck.removeAt(0);
 
-      Item result = await ip.getItemFromID(id.value);
-      // List<int> parents = [];
-      // int previousDepth = id.depth - 1;
-      // for (var i = 1; i < itemsToReturn.length; i++) {
-      //   if (itemsToReturn[i].depth <= previousDepth) {
-      //     parents.add(itemsToReturn[i].id);
-      //     break;
-      //   }
-      //   parents.add(itemsToReturn[i].id);
-      //   previousDepth = itemsToReturn[i].depth;
-      // }
-
-      Comment item = Comment(result, id.depth);
+      Comment item = Comment(await ip.getItemFromID(id.value), id.depth);
 
       // corner case to catch some invalid comments
       if (item.by == null) {
@@ -58,7 +46,6 @@ class CommentsProvider {
     itemsToReturn.removeAt(0);
 
     // determine children
-    outerloop:
     for (var i = 0; i < itemsToReturn.length; i++) {
       innerloop:
       for (var j = i + 1; j < itemsToReturn.length; j++) {

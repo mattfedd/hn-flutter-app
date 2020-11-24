@@ -141,7 +141,10 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       ),
       body: Center(
-        child: _currentItemList,
+        child: RefreshIndicator(
+          onRefresh: _refreshData,
+          child: _currentItemList,
+        ),
       ),
     );
   }

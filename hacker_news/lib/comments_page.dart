@@ -45,7 +45,6 @@ class _CommentsPageState extends State<CommentsPage> {
       } else {
         _tappedIds.add(id);
       }
-      print(_tappedIds);
     });
   }
 
@@ -63,7 +62,7 @@ class _CommentsPageState extends State<CommentsPage> {
                       itemList[id].children.contains(itemList[index].id))
                   .isNotEmpty,
               onTapHandler: () {
-                print("children: ${itemList[index].children}");
+                // print("children: ${itemList[index].children}");
                 _commentCardTapHandler(index);
               },
             );

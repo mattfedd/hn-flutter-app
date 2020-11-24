@@ -34,12 +34,15 @@ class CommentListCard extends StatelessWidget {
   }
 
   final int depthBarWidth = 2;
+  final int _transitionDurationMs = 300;
 
   @override
   Widget build(BuildContext context) {
     return AnimatedSwitcher(
-      duration: Duration(milliseconds: 150),
-      switchInCurve: Curves.easeInOut,
+      duration: Duration(milliseconds: _transitionDurationMs),
+      reverseDuration: Duration(milliseconds: _transitionDurationMs),
+      switchInCurve: Interval(0.1, 1.0),
+      switchOutCurve: Curves.easeIn,
       transitionBuilder: (Widget child, Animation<double> animation) {
         return SizeTransition(
             sizeFactor: animation,
@@ -57,100 +60,11 @@ class CommentListCard extends StatelessWidget {
                 onTap: onTapHandler ?? () {},
                 child: Stack(
                   children: <Widget>[
-                    Positioned.fill(
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      child: Row(
-                        children: <Widget>[
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal:
-                                    depthBarWidth * 1.0 * (child.depth - 1)),
-                            child: _buildDepthMarkers(context, child.depth),
-                          ),
-                        ],
-                      ),
-                    ),
+                    _buildDepthMarker(context, child.depth),
                     Padding(
                       padding: EdgeInsets.only(
-                          left: depthBarWidth * 1.0 * (child.depth - 1)),
-                      child: Row(
-                        children: <Widget>[
-                          Expanded(
-                            child: Column(
-                              children: <Widget>[
-                                Divider(height: 2, color: Colors.grey[800]),
-                                Container(
-                                  alignment: Alignment.centerLeft,
-                                  padding: EdgeInsets.only(top: 4, left: 7),
-                                  child: Row(
-                                    children: <Widget>[
-                                      Container(
-                                        alignment: Alignment.centerLeft,
-                                        child: Text(
-                                          child.by != null ? "${child.by}" : "",
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .caption,
-                                          overflow: TextOverflow.ellipsis,
-                                          softWrap: false,
-                                        ),
-                                      ),
-                                      Text(" · "),
-                                      Container(
-                                        alignment: Alignment.centerLeft,
-                                        child: Text(
-                                          child.time != null
-                                              ? howLongAgo(
-                                                  DateTime.now().toUtc(),
-                                                  child.time)
-                                              : "",
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .caption,
-                                          overflow: TextOverflow.ellipsis,
-                                          softWrap: false,
-                                        ),
-                                      ),
-                                      hasCollapsedChildren
-                                          ? Expanded(
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 18.0),
-                                                child: Align(
-                                                  alignment:
-                                                      Alignment.centerRight,
-                                                  child: Container(
-                                                      padding:
-                                                          EdgeInsets.symmetric(
-                                                              horizontal: 5.0),
-                                                      color: Colors.green,
-                                                      child: Text(
-                                                          "+${child.children.length}",
-                                                          style:
-                                                              Theme.of(context)
-                                                                  .textTheme
-                                                                  .caption)),
-                                                ),
-                                              ),
-                                            )
-                                          : Container()
-                                    ],
-                                  ),
-                                ),
-                                Html(
-                                  data: child.text,
-                                  onLinkTap: (url) {
-                                    _launchURL(url);
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
+                          left: depthBarWidth.toDouble() * (child.depth - 1)),
+                      child: _buildMainCard(context),
                     ),
                   ],
                 ),
@@ -167,15 +81,101 @@ class CommentListCard extends StatelessWidget {
     }
   }
 
-  Widget _buildDepthMarkers(BuildContext context, int d) {
-    if (d > 1) {
-      return Container(
-        width: depthBarWidth * 1.0,
-        color: _depthToColor(d),
-      );
-    } else {
+  Widget _buildMainCard(BuildContext context) {
+    return Row(
+      children: <Widget>[
+        Expanded(
+          child: Column(
+            children: <Widget>[
+              Divider(height: 2, color: Colors.grey[800]),
+              Container(
+                alignment: Alignment.centerLeft,
+                padding: EdgeInsets.only(top: 4, left: 7),
+                child: Row(
+                  children: <Widget>[
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        child.by != null ? "${child.by}" : "",
+                        style: Theme.of(context).textTheme.caption,
+                        overflow: TextOverflow.ellipsis,
+                        softWrap: false,
+                      ),
+                    ),
+                    Text(" · "),
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        child.time != null
+                            ? howLongAgo(DateTime.now().toUtc(), child.time)
+                            : "",
+                        style: Theme.of(context).textTheme.caption,
+                        overflow: TextOverflow.ellipsis,
+                        softWrap: false,
+                      ),
+                    ),
+                    hasCollapsedChildren
+                        ? _buildCollapsedChildrenCounter(
+                            context, child.children.length)
+                        : Container()
+                  ],
+                ),
+              ),
+              Html(
+                data: child.text,
+                onLinkTap: (url) {
+                  _launchURL(url);
+                },
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDepthMarker(BuildContext context, int depth) {
+    Widget depthBar = depth > 1
+        ? Container(
+            width: depthBarWidth.toDouble(),
+            color: _depthToColor(depth),
+          )
+        : Container();
+
+    return Positioned.fill(
+      top: 1,
+      left: 0,
+      right: 0,
+      child: Row(
+        children: <Widget>[
+          Padding(
+            padding: EdgeInsets.symmetric(
+                horizontal: depthBarWidth * 1.0 * (depth - 1)),
+            child: depthBar,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCollapsedChildrenCounter(BuildContext context, int numChildren) {
+    if (numChildren == 0) {
       return Container();
     }
+
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 18.0),
+        child: Align(
+          alignment: Alignment.centerRight,
+          child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 5.0),
+              color: Colors.green,
+              child: Text("+$numChildren",
+                  style: Theme.of(context).textTheme.caption)),
+        ),
+      ),
+    );
   }
 
   String howLongAgo(DateTime now, DateTime then) {

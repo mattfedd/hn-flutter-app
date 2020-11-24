@@ -51,10 +51,6 @@ class ItemProvider {
     }
   }
 
-  Future<List<Item>> _getItemListFromIDs(List<int> ids) async {
-    return await Future.wait(ids.map((id) => this.getItemFromID(id)));
-  }
-
   Future<List<int>> _getIdList(ListFilter filter) async {
     var response = await client.get(_filterToUrl(filter));
     if (response.statusCode == 200) {
