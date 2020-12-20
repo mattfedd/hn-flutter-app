@@ -1,4 +1,6 @@
 # Flutter build
+name: $(Date:yyyyMMdd)$(Rev:r)
+
 variables:
   projectDirectory: hacker_news
 
