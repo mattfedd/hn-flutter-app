@@ -25,3 +25,4 @@ jobs:
       inputs:
         contents: '**/*.apk'
         targetFolder: '$(build.artifactStagingDirectory)'
+    - task: PublishBuildArtifacts@1
