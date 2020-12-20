@@ -1,5 +1,7 @@
 # hacker_news
 
+[![Build Status](https://dev.azure.com/MattFedd/HN%20News%20Reader/_apis/build/status/mattfedd.hn-flutter-app?branchName=master)](https://dev.azure.com/MattFedd/HN%20News%20Reader/_build/latest?definitionId=1&branchName=master)
+
 Current state
 
 <img src="screenshot.png" alt="screenshot" width="150"/>
