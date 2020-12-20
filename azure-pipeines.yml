@@ -5,9 +5,13 @@ variables:
 jobs:
   - job: Android
     pool:
-      vmImage: 'macOS-10.13'
+      vmImage: 'macOS-10.15'
     steps:
     - task: FlutterInstall@0
+      inputs:
+        channel: 'stable'
+        version: 'custom'
+        customVersion: '1.22.4'
     - task: FlutterBuild@0
       inputs:
         target: apk
@@ -19,4 +23,3 @@ jobs:
       inputs:
         contents: '**/*.apk'
         targetFolder: '$(build.artifactStagingDirectory)'
-    - task: PublishBuildArtifacts@1
